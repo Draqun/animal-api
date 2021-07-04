@@ -1,0 +1,14 @@
+openapi: 3.0.0
+info:
+  title: Damian Giebas Connexion TrainingApp
+  description: This app was created for self study
+  version: 1.0.0
+paths:
+  /health:
+    get:
+      summary: Health endpoint
+      description: Is api alive
+      operationId: api.webapp.health.health
+      responses:
+        '200':
+          description: Api is alive
