@@ -24,5 +24,8 @@ dev-services-up-env: source-env
 	@while [ $$(docker ps --filter health=starting --format "{{.Status}}" | wc -l) != 0 ]; do echo 'waiting for healthy containers'; sleep 1; done
 	${DEV_SERVICES_ENV_VARIABLES} $(MAKE) schema-upgrade
 
+dev-services-down:
+	${DEV_SERVICES_ENV_VARIABLES} docker-compose -p ${PROJECT} -f docker/docker-compose.yaml down -v --remove-orphans
+
 schema-upgrade:
 	cd db-migrations; alembic -x env=${MIGRATION_ENV} upgrade HEAD

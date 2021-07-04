@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   title: Damian Giebas Connexion TrainingApp
   description: This app was created for self study
-  version: 1.0.0
+  version: 0.0.1
 paths:
   /health:
     get:
@@ -12,3 +12,55 @@ paths:
       responses:
         '200':
           description: Api is alive
+  /animals:
+    get:
+      tags:
+        - "animal"
+      summary: "Get all animals"
+      description: ""
+      operationId: api.webapp.animal.animals
+      responses:
+        "200":
+          description: "All animals"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Animal"
+  /animal:
+    post:
+      tags:
+        - "animal"
+      summary: "Add animal to database"
+      description: ""
+      operationId: api.webapp.animal.add_animal
+      requestBody:
+        description: Animal object
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Animal"
+        required: true
+      responses:
+        "201":
+          description: "Created"
+        "405":
+          description: "Invalid input"
+components:
+  schemas:
+    Animal:
+      type: "object"
+      required:
+        - "name"
+        - "description"
+      properties:
+        id:
+          type: "integer"
+          format: "int64"
+        name:
+          type: "string"
+          example: "T-Rex"
+        description:
+          type: "string"
+          example: "Greate predator and a big lizard"
