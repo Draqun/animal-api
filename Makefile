@@ -28,4 +28,4 @@ dev-services-down:
 	${DEV_SERVICES_ENV_VARIABLES} docker-compose -p ${PROJECT} -f docker/docker-compose.yaml down -v --remove-orphans
 
 schema-upgrade:
-	cd db-migrations; alembic -x env=${MIGRATION_ENV} upgrade HEAD
+	cd db-migrations; alembic -x env=${MIGRATION_ENV} upgrade head

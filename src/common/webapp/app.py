@@ -3,6 +3,7 @@ from typing import Dict
 
 from connexion import ProblemException, FlaskApp
 from connexion.resolver import RestyResolver
+from flask_cors import CORS
 from werkzeug.exceptions import HTTPException
 
 from common.common_logging.configure_logging import configure_logging
@@ -31,4 +32,5 @@ def create_app(specification_path: Path, name: str, host: str, port: int,
         validate_responses=True
     )
 
+    CORS(app.app)
     return app
