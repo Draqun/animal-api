@@ -69,6 +69,6 @@ def configure_logging(app, name, log_level):
         # },
         "root": {
             "level": log_level if debug else "INFO",
-            "handlers": ["console"] if debug else ["console", "slack"],
+            "handlers": ["console"],
         }
     })
