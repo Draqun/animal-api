@@ -3,6 +3,8 @@ info:
   title: Damian Giebas Connexion TrainingApp
   description: This app was created for self study
   version: 0.0.1
+servers:
+  - url: /api
 paths:
   /health:
     get:
