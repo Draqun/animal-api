@@ -18,7 +18,7 @@ ifneq (,$(wildcard environment.env))
 endif
 
 source-env:
-	source $(PWD)/venv/bin/activate
+	source ./venv/bin/activate
 
 init-env:
 	$(PY_VERSION) -m venv venv
