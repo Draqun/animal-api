@@ -1,5 +1,6 @@
 from logging.config import dictConfig
 
+
 def configure_logging(app, name, log_level):
     debug = False
     if log_level == "DEBUG":

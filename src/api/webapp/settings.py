@@ -1,10 +1,12 @@
 from dataclasses import dataclass
 import os
+from typing import Optional
+
 
 @dataclass(frozen=True)
 class AppConfig:
-    host: str
-    port: int
+    host: Optional[str]
+    port: Optional[int]
     log_level: str
     db_host: str
     db_port: int
@@ -14,12 +16,15 @@ class AppConfig:
 
     @classmethod
     def read_config(cls):
+        port = os.environ.get('PORT', None)
+        if port:
+            port = int(port)
         return cls(
-            host=os.environ['HOST'],
-            port=os.environ['PORT'],
-            log_level=os.environ['LOG_LEVEL'],
+            host=os.environ.get('HOST', None),
+            port=port,
+            log_level=os.environ.get('LOG_LEVEL', 'INFO'),
             db_host=os.environ['DB_HOST'],
-            db_port=os.environ['DB_PORT'],
+            db_port=int(os.environ['DB_PORT']),
             db_name=os.environ['DB_NAME'],
             db_user=os.environ['DB_USER'],
             db_pass=os.environ['DB_PASS']
