@@ -26,6 +26,7 @@ aws --profile default configure set aws_access_key_id "AKIA46ZQGKPVRU2WG4G5"
 aws --profile default configure set aws_secret_access_key "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"
 aws s3api get-object --bucket 'dgiebas-upskill-bucket' --key 'ec2temp' ~/.ssh/id_rsa
 aws s3api get-object --bucket 'dgiebas-upskill-bucket' --key 'upskillbe.env' /etc/upskillbe.env
+chmod 640 /etc/upskillbe.env
 chmod 400 ~/.ssh/id_rsa
 eval `ssh-agent`
 ssh-add ~/.ssh/id_rsa
@@ -52,7 +53,7 @@ EOM
 . /etc/upskillbe.env && sed -i "s/user:pass@localhost\/db/${DB_USER}:${DB_PASS}@${DB_HOST}\/${DB_NAME}/g" $APP_HOME/db-migrations/alembic.ini
 systemctl start upskill_backend.service
 systemctl enable upskill_backend.service
-chmod 773 /opt/upskill_backend/src/api/webapp/upskill_backend.sock
 systemctl enable nginx
 service nginx restart
+chmod 773 /opt/upskill_backend/src/api/webapp/upskill_backend.sock
 
