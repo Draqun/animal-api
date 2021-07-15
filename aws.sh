@@ -55,5 +55,9 @@ systemctl start upskill_backend.service
 systemctl enable upskill_backend.service
 systemctl enable nginx
 service nginx restart
+while [ ! -f /opt/upskill_backend/src/api/webapp/upskill_backend.sock ]
+do
+  sleep 2 # or less like 0.2
+  echo "#" >> /tmp/waiting.tmp
+done
 chmod 773 /opt/upskill_backend/src/api/webapp/upskill_backend.sock
-

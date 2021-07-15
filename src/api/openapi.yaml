@@ -65,4 +65,4 @@ components:
           example: "T-Rex"
         description:
           type: "string"
-          example: "Greate predator and a big lizard"
+          example: "Great predator and a big lizard"
