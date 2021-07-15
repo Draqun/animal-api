@@ -1,7 +1,5 @@
 from pathlib import Path
 
-import connexion
-
 from common.webapp.app import create_app
 from api.webapp.settings import config
 
@@ -12,7 +10,8 @@ app = create_app(
     name='api',
     host=config.host,
     port=config.port,
-    log_level=config.log_level
+    log_level=config.log_level,
+    swagger_ui=config.swagger_ui
 )
 
 if __name__ == '__main__':

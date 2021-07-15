@@ -13,12 +13,16 @@ class AppConfig:
     db_name: str
     db_user: str
     db_pass: str
+    swagger_ui: bool
 
     @classmethod
     def read_config(cls):
         port = os.environ.get('PORT', None)
         if port:
             port = int(port)
+
+        display_ui: str = os.environ.get('SWAGGER', 'false')
+
         return cls(
             host=os.environ.get('HOST', None),
             port=port,
@@ -27,7 +31,8 @@ class AppConfig:
             db_port=int(os.environ['DB_PORT']),
             db_name=os.environ['DB_NAME'],
             db_user=os.environ['DB_USER'],
-            db_pass=os.environ['DB_PASS']
+            db_pass=os.environ['DB_PASS'],
+            swagger_ui=True if display_ui.lower() == 'true' else False
         )
 
     @property

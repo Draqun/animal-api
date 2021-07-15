@@ -11,13 +11,14 @@ from api.webapp.error_handler import handle_error
 
 
 def create_app(specification_path: Path, name: str, host: str, port: int,
-               log_level: str, options: Dict = {'swagger_ui': True}) -> FlaskApp:
+               log_level: str, swagger_ui: bool = False) -> FlaskApp:
+    options: Dict = {'swagger_ui': swagger_ui}
     app = FlaskApp(
         import_name=__name__,
         host=host,
         port=port,
         specification_dir=specification_path.parent,
-        resolver = RestyResolver('api'),
+        resolver=RestyResolver('api'),
         options=options
     )
 
