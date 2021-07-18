@@ -11,7 +11,8 @@ from api.webapp.settings import config
 
 
 incoming_bucket = os.environ['S3_BUCKET_INCOMING_FILES_NAME']
-aws_s3_url = os.environ.get('AWS_S3_URL', 'http://s3.amazonaws.com')
+aws_s3_url = os.environ.get('AWS_S3_URL', 'https://s3.amazonaws.com')
+aws_s3_url = aws_s3_url.replace('https://', f'https://{incoming_bucket}/')
 
 
 def is_allowed_type(image_type: str) -> bool:
@@ -35,7 +36,7 @@ def add_animal(body, image: Optional[FileStorage] = None) -> Tuple[dict, int]:
             return {'status': 'File upload failed'}, 415
 
     if key:
-        body['image'] = f'{aws_s3_url}/{incoming_bucket}/{key}'
+        body['image'] = f'{aws_s3_url}/{key}'
 
     db_eng = create_engine(config.connection_string, echo=True)
     with db_eng.begin() as conn:
