@@ -19,7 +19,6 @@ def is_allowed_type(image_type: str) -> bool:
 
 
 def add_animal(body, image: Optional[FileStorage] = None) -> Tuple[dict, int]:
-    key = ''
     body['image'] = ''
 
     if image is not None:
