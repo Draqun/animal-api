@@ -34,7 +34,8 @@ def add_animal(body, image: Optional[FileStorage] = None) -> Tuple[dict, int]:
             logging.error('Error putting object {} to bucket {}.'.format(key, incoming_bucket))
             return {'status': 'File upload failed'}, 415
 
-    body['image'] = f'{aws_s3_url}/{incoming_bucket}/{key}'
+    if key:
+        body['image'] = f'{aws_s3_url}/{incoming_bucket}/{key}'
 
     db_eng = create_engine(config.connection_string, echo=True)
     with db_eng.begin() as conn:
@@ -64,7 +65,8 @@ def animals() -> Tuple[list, int]:
         else:
             for item in result:
                 item = dict(item)
-                item['image'] = item.pop('image_url')
+                if ('image_url' in item) and item['image_url'] is not None:
+                    item['image'] = item.pop('image_url')
                 items.append(item)
 
     return items, 200
