@@ -12,7 +12,6 @@ from api.webapp.settings import config
 
 incoming_bucket = os.environ['S3_BUCKET_INCOMING_FILES_NAME']
 aws_s3_url = os.environ.get('AWS_S3_URL', 'https://s3.amazonaws.com')
-aws_s3_url = aws_s3_url.replace('https://', f'https://{incoming_bucket}/')
 
 
 def is_allowed_type(image_type: str) -> bool:
@@ -21,22 +20,23 @@ def is_allowed_type(image_type: str) -> bool:
 
 def add_animal(body, image: Optional[FileStorage] = None) -> Tuple[dict, int]:
     key = ''
+    body['image'] = ''
 
     if image is not None:
         if not is_allowed_type(image.content_type):
             return {'status': 'Incorrect file content'}, 415
 
+        key = uuid4().hex + '.' + image.filename.split(".")[-1]
         try:
             s3 = boto3.client('s3', endpoint_url=aws_s3_url)
-            key = uuid4().hex + '.' + image.filename.split(".")[-1]
             s3.put_object(Body=image, Bucket=incoming_bucket, Key=key, ContentType=image.content_type)
         except Exception as ex:  # pylint: disable=broad-except
             logging.exception(ex)
             logging.error('Error putting object {} to bucket {}.'.format(key, incoming_bucket))
             return {'status': 'File upload failed'}, 415
-
-    if key:
-        body['image'] = f'{aws_s3_url}/{key}'
+        else:
+            url = s3.meta.endpoint_url.split('//')
+            body['image'] = f'{url[0]}//{incoming_bucket}.{url[1]}/{key}'
 
     db_eng = create_engine(config.connection_string, echo=True)
     with db_eng.begin() as conn:
