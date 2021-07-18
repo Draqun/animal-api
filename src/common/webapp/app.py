@@ -19,6 +19,7 @@ def create_app(specification_path: Path, name: str, host: str, port: int,
         port=port,
         specification_dir=specification_path.parent,
         resolver=RestyResolver('api'),
+        debug=True if log_level == 'DEBUG' else False,
         options=options
     )
 
