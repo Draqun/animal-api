@@ -40,6 +40,9 @@ dev-env-down:
 schema-upgrade: source-env
 	cd db-migrations; alembic -x env=${MIGRATION_ENV} upgrade head
 
+new-revision: source-env
+	cd db-migrations; alembic -x env=${MIGRATION_ENV} revision
+
 run-gunicorn:
 	PYTHONPATH="${PYTHONPATH}:${PWD}/src" gunicorn --bind $(APP_HOST):$(APP_PORT) \
 		--workers=$$(( $(WORKERS_PER_CORE) * $(NB_OF_CORES) )) \

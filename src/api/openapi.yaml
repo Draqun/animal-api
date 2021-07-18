@@ -40,7 +40,7 @@ paths:
       requestBody:
         description: Animal object
         content:
-          application/json:
+          multipart/form-data:
             schema:
               $ref: "#/components/schemas/Animal"
         required: true
@@ -49,6 +49,8 @@ paths:
           description: "Created"
         "405":
           description: "Invalid input"
+        "415":
+          description: "Incorrect file content"
 components:
   schemas:
     Animal:
@@ -66,3 +68,7 @@ components:
         description:
           type: "string"
           example: "Great predator and a big lizard"
+        image:
+          type: "string"
+          example: "Dog.PNG"
+          format: "binary"

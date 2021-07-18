@@ -19,3 +19,35 @@ services:
       timeout: 60s
       retries: 5
       start_period: 10s
+    volumes:
+      - 'my-db:/var/lib/mysql'
+
+  db-client:
+    container_name: phpmyadmin
+    image: phpmyadmin/phpmyadmin:5.1.1
+    ports:
+      - "8082:80"
+    environment:
+      - MYSQL_ROOT_PASSWORD=${DB_PASSWORD}
+      - MYSQL_USER=${DB_USER}
+      - MYSQL_PASSWORD=${DB_PASSWORD}
+      - PMA_HOST=db
+
+  localstack:
+    image: registry.gitlab.com/trustpayments-public/public-docker-registry/localstack:7.0.11
+    environment:
+      - AWS_DEFAULT_REGION=eu-west-1
+      - LOCALSTACK_DEFAULT_REGION=eu-west-1
+      - LOCALSTACK_SERVICES=s3
+      - HOSTNAME_EXTERNAL=localstack
+      - LAMBDA_DOCKER_NETWORK=ripple-adapter_default
+      - LOCALHOST_DOCKER_HOST=unix:///var/run/docker.sock
+      - LOCALSTACK_DEBUG=1
+    ports:
+      - 4566:4566
+    volumes:
+      - './localstack/init_resources.sh:/docker-entrypoint-initaws.d/init_resources.sh'
+      - "/var/run/docker.sock:/var/run/docker.sock"
+
+volumes:
+  my-db:
