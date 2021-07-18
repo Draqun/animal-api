@@ -11,7 +11,7 @@ from api.webapp.settings import config
 
 
 incoming_bucket = os.environ['S3_BUCKET_INCOMING_FILES_NAME']
-aws_s3_url = os.environ['AWS_S3_URL']
+aws_s3_url = os.environ.get('AWS_S3_URL', 'http://s3.amazonaws.com')
 
 
 def is_allowed_type(image_type: str) -> bool:

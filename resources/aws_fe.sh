@@ -10,7 +10,7 @@ eval `ssh-agent`
 ssh-add ~/.ssh/id_rsa
 PUB_URL=`curl ipinfo.io/ip`
 GIT_SSH_COMMAND="ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no" git clone git@gitlab.com:dgiebas/upskill_frontend.git
-sed -i "s/10.0.2.247:8000/${PUB_URL}\/api/g" upskill_frontend/js/app.js
+sed -i "s/127.0.0.1:8000/${PUB_URL}\/api/g" upskill_frontend/js/app.js
 echo "location /api { proxy_pass http://internal-dgiebas-upskill-priv-lb-805197935.eu-west-1.elb.amazonaws.com; }" >> /etc/nginx/default.d/server-proxy.conf
 cp -ufR upskill_frontend/* /usr/share/nginx/html/
 systemctl enable nginx
