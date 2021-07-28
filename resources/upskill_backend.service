@@ -5,6 +5,7 @@ After=network.target
 [Service]
 User=root
 Group=root
+Restart=always
 EnvironmentFile=/etc/upskillbe.env
 ExecStart=/opt/upskill_backend/resources/run_gunicorn_server.sh
 
