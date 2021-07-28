@@ -1,6 +1,6 @@
 #!/bin/bash
 yum update -y
-yum install -y git
+yum install -y git mariadb.x86_64
 amazon-linux-extras install -y nginx1
 aws --profile default configure set aws_access_key_id "AKIA46ZQGKPVRU2WG4G5"
 aws --profile default configure set aws_secret_access_key "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"
