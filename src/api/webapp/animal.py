@@ -34,8 +34,8 @@ def add_animal(body, image: Optional[FileStorage] = None) -> Tuple[dict, int]:
             logging.error('Error putting object {} to bucket {}.'.format(key, incoming_bucket))
             return {'status': 'File upload failed'}, 415
         else:
-            url = s3.meta.endpoint_url.split('//')
-            body['image'] = f'{url[0]}//{incoming_bucket}.{url[1]}/{key}'
+            url = s3.generate_presigned_url(ClientMethod='get_object', Params={'Bucket': incoming_bucket, 'Key': key})
+            body['image'] = url
 
     db_eng = create_engine(config.connection_string, echo=True)
     with db_eng.begin() as conn:
