@@ -16,7 +16,7 @@ mv upskill_backend/ $APP_HOME
 cd $APP_HOME
 chmod +x $APP_HOME/resources/run_gunicorn_server.sh
 make create-env
-make schema-upgrade
+source /opt/upskill_backend/venv/bin/activate && make schema-upgrade
 cp $APP_HOME/resources/upskill_backend.service /etc/systemd/system
 cat > /etc/nginx/conf.d/upskill_backend.conf <<- EOM
 server {
