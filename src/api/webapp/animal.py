@@ -1,74 +1,31 @@
-import logging
-import os
 from typing import Optional, Tuple
-from uuid import uuid4
 
-import boto3
-from sqlalchemy import create_engine, text
 from werkzeug.datastructures import FileStorage
 
 from api.webapp.settings import config
-
-
-incoming_bucket = os.environ['S3_BUCKET_INCOMING_FILES_NAME']
-aws_s3_url = os.environ.get('AWS_S3_URL', 'https://s3.amazonaws.com')
-
-
-def is_allowed_type(image_type: str) -> bool:
-    return image_type in ['image/png', 'image/jpeg']
+from common.adapters.repository.animal import Animal
+from common.adapters.repository.db.unit_of_work import SQLUnitOfWork
+from common.adapters.s3 import S3, S3NotAllowedObjectType, S3UploadFailed
 
 
 def add_animal(body, image: Optional[FileStorage] = None) -> Tuple[dict, int]:
-    body['image'] = ''
-
+    data = {}
+    data.update(body)
     if image is not None:
-        if not is_allowed_type(image.content_type):
+        try:
+            data['image_key'], data['bucket_name'] = S3().upload_image(image)
+        except S3NotAllowedObjectType:
             return {'status': 'Incorrect file content'}, 415
-
-        key = uuid4().hex + '.' + image.filename.split(".")[-1]
-        try:
-            s3 = boto3.client('s3', endpoint_url=aws_s3_url)
-            s3.put_object(Body=image, Bucket=incoming_bucket, Key=key, ContentType=image.content_type)
-        except Exception as ex:  # pylint: disable=broad-except
-            logging.exception(ex)
-            logging.error('Error putting object {} to bucket {}.'.format(key, incoming_bucket))
+        except S3UploadFailed:
             return {'status': 'File upload failed'}, 415
-        else:
-            url = s3.generate_presigned_url(ClientMethod='get_object', Params={'Bucket': incoming_bucket, 'Key': key})
-            header, _, domain, bucket, *rest = url.split('/')
-            key = '/'.join(rest)
-            body['image'] = f'{header}//{bucket}.{domain}/{key}'
-
-    db_eng = create_engine(config.connection_string, echo=True)
-    with db_eng.begin() as conn:
-        try:
-            result = conn.execute(
-                text("INSERT INTO animals (name, description, image_url) VALUES (:name, :description, :image);"),
-                body
-            )
-        except Exception as ex:
-            logging.exception(ex)
+    with SQLUnitOfWork(config) as uow:
+        animal = Animal(**data).add_animal_to_db(uow)
+        if not animal:
             return {'status': 'Incorrect values', 'values': body}, 405
 
-    body['id'] = result.lastrowid
-    return body, 201
+    return animal.as_dict(), 201
 
 
 def animals() -> Tuple[list, int]:
-    db_eng = create_engine(config.connection_string, echo=True)
-    items = []
-    with db_eng.begin() as conn:
-        try:
-            result = conn.execute(
-                text("SELECT * FROM animals"),
-            )
-        except Exception as ex:
-            logging.exception(ex)
-        else:
-            for item in result:
-                item = dict(item)
-                if ('image_url' in item) and item['image_url'] is not None:
-                    item['image'] = item.pop('image_url')
-                items.append(item)
-
-    return items, 200
+    with SQLUnitOfWork(config) as uow:
+        return Animal.all(uow), 200

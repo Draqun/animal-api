@@ -21,7 +21,9 @@ def upgrade():
         'animals',
         sa.Column('id', sa.Integer, primary_key=True, autoincrement=True),
         sa.Column('name', sa.String(100), nullable=False),
-        sa.Column('description', sa.Unicode(1024))
+        sa.Column('description', sa.Unicode(1024)),
+        sa.Column('image_key', sa.String(128), nullable=True),
+        sa.Column('bucket_name', sa.String(128), nullable=True),
     )
 
 

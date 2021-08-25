@@ -6,12 +6,10 @@ from connexion.resolver import RestyResolver
 from flask_cors import CORS
 from werkzeug.exceptions import HTTPException
 
-from common.common_logging.configure_logging import configure_logging
 from api.webapp.error_handler import handle_error
 
 
-def create_app(specification_path: Path, name: str, host: str, port: int,
-               log_level: str, swagger_ui: bool = False) -> FlaskApp:
+def create_app(specification_path: Path, host: str, port: int, log_level: str, swagger_ui: bool = False) -> FlaskApp:
     options: Dict = {'swagger_ui': swagger_ui}
     app = FlaskApp(
         import_name=__name__,
@@ -19,11 +17,9 @@ def create_app(specification_path: Path, name: str, host: str, port: int,
         port=port,
         specification_dir=specification_path.parent,
         resolver=RestyResolver('api'),
-        debug=True if log_level == 'DEBUG' else False,
+        debug=log_level == 'DEBUG',
         options=options
     )
-
-    configure_logging(app=app.app, name=name, log_level=log_level)
 
     # Add custom error handler
     for exception in (ProblemException, HTTPException):

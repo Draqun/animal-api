@@ -4,7 +4,7 @@ from typing import Optional
 
 
 @dataclass(frozen=True)
-class AppConfig:
+class AppConfig:  # pylint:disable=too-many-instance-attributes
     host: Optional[str]
     port: Optional[int]
     log_level: str
@@ -32,15 +32,15 @@ class AppConfig:
             db_name=os.environ['DB_NAME'],
             db_user=os.environ['DB_USER'],
             db_pass=os.environ['DB_PASS'],
-            swagger_ui=True if display_ui.lower() == 'true' else False
+            swagger_ui=display_ui.lower() == 'true'
         )
 
     @property
-    def endpoint_url(self):
+    def endpoint_url(self) -> str:
         return f'http://{self.db_host}:{self.db_port}'
 
     @property
-    def connection_string(self):
+    def connection_string(self) -> str:
         return f'mysql+pymysql://{self.db_user}:{self.db_pass}@{self.db_host}:{self.db_port}/{self.db_name}'
 
 
