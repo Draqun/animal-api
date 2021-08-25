@@ -7,7 +7,6 @@ SWAGGER_PATH = Path(__file__).absolute().parents[1] / 'openapi.yaml'
 
 app = create_app(
     specification_path=SWAGGER_PATH,
-    name='api',
     host=config.host,
     port=config.port,
     log_level=config.log_level,

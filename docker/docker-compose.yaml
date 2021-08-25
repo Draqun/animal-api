@@ -1,9 +1,9 @@
 # This won't be used by CI/CD. This is just for local development
 
-version: '3.7'
+version: '3.9'
 
 services:
-  db:
+  mysql:
     image: mysql
     restart: always
     environment:
@@ -20,10 +20,9 @@ services:
       retries: 5
       start_period: 10s
     volumes:
-      - 'my-db:/var/lib/mysql'
+      - 'db-data:/var/lib/mysql'
 
-  db-client:
-    container_name: phpmyadmin
+  phpmyadmin:
     image: phpmyadmin/phpmyadmin:5.1.1
     ports:
       - "8082:80"
@@ -31,7 +30,7 @@ services:
       - MYSQL_ROOT_PASSWORD=${DB_PASSWORD}
       - MYSQL_USER=${DB_USER}
       - MYSQL_PASSWORD=${DB_PASSWORD}
-      - PMA_HOST=db
+      - PMA_HOST=mysql
 
   localstack:
     image: registry.gitlab.com/trustpayments-public/public-docker-registry/localstack:7.0.11
@@ -50,4 +49,5 @@ services:
       - "/var/run/docker.sock:/var/run/docker.sock"
 
 volumes:
-  my-db:
+  db-data:
+    external: true

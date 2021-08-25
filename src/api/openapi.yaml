@@ -1,4 +1,4 @@
-openapi: 3.0.0
+openapi: 3.0.1
 info:
   title: Damian Giebas Connexion TrainingApp
   description: This app was created for self study
@@ -29,7 +29,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Animal"
+                  $ref: "#/components/schemas/AnimalResponse"
   /animal:
     post:
       tags:
@@ -42,7 +42,7 @@ paths:
         content:
           multipart/form-data:
             schema:
-              $ref: "#/components/schemas/Animal"
+              $ref: "#/components/schemas/AnimalRequest"
         required: true
       responses:
         "201":
@@ -53,20 +53,47 @@ paths:
           description: "Incorrect file content"
 components:
   schemas:
-    Animal:
+    AnimalResponse:
       type: "object"
       required:
+        - "id"
         - "name"
         - "description"
       properties:
         id:
           type: "integer"
-          format: "int64"
+          format: "bigint"
         name:
           type: "string"
           example: "T-Rex"
         description:
           type: "string"
+          example: "Great predator and a big lizard"
+        image_key:
+          type: "string"
+          nullable: true
+          example: "1234-4356-asdv.png"
+        bucket_name:
+          type: "string"
+          nullable: true
+          example: "image-bucket"
+        image:
+          type: "string"
+          nullable: true
+          format: "uri"
+          example: "http://example.com/Dog.PNG"
+    AnimalRequest:
+      type: "object"
+      required:
+        - "name"
+        - "description"
+      properties:
+        name:
+          type: "string"
+          example: "T-Rex"
+        description:
+          type: "string"
+          minLength: 3
           example: "Great predator and a big lizard"
         image:
           type: "string"
